@@ -26,3 +26,13 @@
              (multiple-value-list (read-two-columns-from-file filename)))
     ; Do something with the sorted columns here, such as get the distance.
     (distance sorted-column1 sorted-column2)))
+
+(defun similarities (col1 col2)
+  (reduce #'+
+          (loop for num in col1
+                collect (* num (count num col2)))))
+
+(defun process-similarities (filename)
+  (apply #'similarities
+         (multiple-value-list (read-two-columns-from-file filename))))
+
