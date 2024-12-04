@@ -8,9 +8,13 @@
       (read-sequence contents in)
       contents)))
 
+(defun respect-do-not-instruction (string)
+  (cl-ppcre:regex-replace-all "don't\\(\\).?do\\(\\)" string "don't()do()"))
+
 (defun find-muls (filename)
-  (let ((input-string (read-input filename)))
-    (cl-ppcre:all-matches-as-strings "mul\\(\\d{1,3},\\d{1,3}\\)" input-string)))
+  (let* ((input-string (read-input filename))
+         (clean-string (respect-do-not-instruction input-string)))
+    (cl-ppcre:all-matches-as-strings "mul\\(\\d{1,3},\\d{1,3}\\)" clean-string)))
 
 (defun clean-mul-pairs (mul-list)
   (mapcar (lambda (mul-str)
