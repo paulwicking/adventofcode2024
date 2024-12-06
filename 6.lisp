@@ -1,4 +1,5 @@
 (require :uiop)
+(require :alexandria)
 
 (defparameter *directions*
   ; Re-use from day 4
@@ -103,9 +104,11 @@
         ((eq direction :left) :up)))
 
 (defun walk-guard (array)
-  "Walk the guard around the map until it finds an exit.
+  "Walk the guard around the map until it finds an exit or enters a loop.
 
-  Returns the number of moves made ('steps taken') by the guard."
+   Returns two values:
+   - :EXIT or :LOOP to indicate how the guard ended the patrol.
+   - The number of unique positions visited by the guard."
   (multiple-value-bind (start-position start-direction) (find-guard array)
     (assert (not (or (null start-position)
                      (null start-direction)))
@@ -113,20 +116,56 @@
             "Couldn't find a guard on the map!")
     (let ((position start-position)
           (direction (get-direction start-direction))
-          (visited (make-hash-table :test #'equal)))
-      (setf (gethash position visited) t)
+          (visited-positions (make-hash-table :test #'equal))
+          (visited-states (make-hash-table :test #'equal)))
+      (setf (gethash position visited-positions) t)
+      (setf (gethash (cons position direction) visited-states) t)
       (loop
         (let ((next-pos (next-position position direction)))
           (unless (within-bounds next-pos array)
-            (return (hash-table-count visited)))
+            (return (values :exit (hash-table-count visited-positions))))
           (if (is-occupied-p next-pos array)
               (setf direction (turn direction))
               (progn
-                (setf position next-pos)
-                (setf (gethash position visited) t))))))))
+                (let ((pos-dir (cons next-pos direction)))
+                  (when (gethash pos-dir visited-states)
+                    (return (values :loop (hash-table-count visited-positions))))
+                  (setf position next-pos)
+                  (setf (gethash position visited-positions) t)
+                  (setf (gethash pos-dir visited-states) t)))))))))
+
+(defun occupied-position-p (position array)
+  "TRUE if POSITION in ARRAY is occupied by guard or obstacle."
+  (when (within-bounds position array)
+    (let ((content (aref array (car position) (cdr position))))
+      (find content "^>v<#"))))
+
+(defun count-loop-creating-positions (map)
+  "For each position in the MAP, unless already occupied by the guard or an
+   obstacle, insert an obstacle, walk the guard, and see if the guard ends up in
+   a loop or exits the map. Then restore the original content of the position
+   and repeat. Returns the total count of positions that will cause the guard to
+   loop forever."
+  (let ((count 0)
+        (test-map (alexandria:copy-array map)))
+    (loop for i below (array-dimension test-map 0)
+          do (loop for j below (array-dimension test-map 1)
+                   do (let ((position (cons i j)))
+                        (unless (occupied-position-p position test-map)
+                          (let ((original (aref test-map i j)))
+                            (setf (aref test-map i j) #\#)
+                            (when (eq :loop (nth-value 0 (walk-guard test-map)))
+                              (incf count))
+                            (setf (aref test-map i j) original))))))
+    count))
 
 (defun solve (filename)
   "Solve the guard maze problem for the given input file.
    Returns the number of steps taken by the guard to reach an exit."
   (let ((maze (create-2d-array-from (read-input filename))))
-    (walk-guard maze)))
+    (nth-value 1 (walk-guard maze))))
+
+(defun solve-again (filename)
+  "Solve part two of the challenge."
+  (let ((maze (create-2d-array-from (read-input filename))))
+    (count-loop-creating-positions maze)))
