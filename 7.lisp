@@ -12,8 +12,11 @@
          (try-multiplying target numbers acc)))
     (t
      (let ((new-acc (+ (car numbers) acc)))
-       (or (try-adding target (cdr numbers) new-acc)
-           (try-multiplying target (cdr numbers) new-acc))))))
+       (if (> new-acc target)
+           nil
+           (or (try-adding target (cdr numbers) new-acc)
+               (try-multiplying target (cdr numbers) new-acc)
+               (try-concatenating target (cdr numbers) new-acc)))))))
 
 (defun try-multiplying (target numbers acc)
   (cond
@@ -23,8 +26,33 @@
      (= target (* acc (car numbers))))
     (t
      (let ((new-acc (* (car numbers) acc)))
-       (or (try-adding target (cdr numbers) new-acc)
-           (try-multiplying target (cdr numbers) new-acc))))))
+       (if (> new-acc target)
+           nil
+           (or (try-adding target (cdr numbers) new-acc)
+               (try-multiplying target (cdr numbers) new-acc)
+               (try-concatenating target (cdr numbers) new-acc)))))))
+
+(defun number-of-digits (number)
+  (loop for i = number then (floor i 10)
+        until (zerop i)
+        count 1))
+
+(defun || (number-one number-two)
+  (+ (* number-one (expt 10 (number-of-digits number-two))) number-two))
+
+(defun try-concatenating (target numbers acc)
+  (cond
+    ((null numbers)
+     (= target acc))
+    ((null (cdr numbers))
+     (= target (|| acc (car numbers))))
+    (t
+     (let ((new-acc (|| acc (car numbers))))
+       (if (> new-acc target)
+           nil
+           (or (try-adding target (cdr numbers) new-acc)
+               (try-multiplying target (cdr numbers) new-acc)
+               (try-concatenating target (cdr numbers) new-acc)))))))
 
 (defun read-target-and-numbers-from-file (filename)
   "Returns a list of lists. The first entry in each list is the target
