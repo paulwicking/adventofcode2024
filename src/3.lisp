@@ -1,3 +1,5 @@
+(in-package :pwi/aoc24)
+
 (require :cl-ppcre)
 
 (defvar *regex-pattern-1* "mul\\(\\d{1,3},\\d{1,3}\\)")

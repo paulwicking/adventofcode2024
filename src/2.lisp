@@ -1,3 +1,5 @@
+(in-package :pwi/aoc24)
+
 (defun valid-increase (a b)
   (and (< a b)
        (<= (- b a) 3)))

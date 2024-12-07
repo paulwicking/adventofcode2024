@@ -1,3 +1,5 @@
+(in-package :pwi/aoc24)
+
 (defun read-two-columns-from-file (filename)
   (with-open-file (stream filename)
     (loop for line = (read-line stream nil nil)

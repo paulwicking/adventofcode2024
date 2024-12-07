@@ -1,3 +1,5 @@
+(in-package :pwi/aoc24)
+
 (require :uiop)
 
 (defun read-rules-and-updates-from (filename)

@@ -1,5 +1,4 @@
-(defpackage :pwi/aoc24/7
-  (:use :cl :uiop :asdf))
+(in-package :pwi/aoc24)
 
 (require :uiop)
 
