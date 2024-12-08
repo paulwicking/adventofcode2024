@@ -16,17 +16,6 @@
               (uiop:read-file-string filename)
               :separator '(#\Newline #\Return))))
 
-(defun create-2d-array-from (input)
-  ; Re-use from day 4
-  (multiple-value-bind (rows cols) (calculate-array-dimensions input)
-    (let ((array (make-array (list rows cols))))
-      (loop for row from 0
-            for str in input
-            do (loop for col from 0
-                     for char across str
-                     do (setf (aref array row col) char)))
-      array)))
-
 (defun find-guard (array)
   "Returns two values:
 
