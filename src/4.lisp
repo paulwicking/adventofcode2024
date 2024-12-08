@@ -24,17 +24,10 @@
                      do (setf (aref array row col) char)))
       array)))
 
-(defun within-bounds (row col gridsize)
-  (and
-   (>= row 0)
-   (>= col 0)
-   (< row gridsize)
-   (< col gridsize)))
-
 (defun check-for-match (start-row start-col direction array string)
   (if (zerop (length string))
       t
-      (let ((in-bounds (within-bounds start-row start-col (array-dimension array 0))))
+      (let ((in-bounds (within-bounds (cons start-row start-col) array)))
         (and in-bounds                       
            (char-equal (aref array start-row start-col) (char string 0))
            (check-for-match (+ start-row (car direction))
