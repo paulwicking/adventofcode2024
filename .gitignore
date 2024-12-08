@@ -1,2 +1,3 @@
 *.fasl
 input_[0-9]*.txt
+sample-data
