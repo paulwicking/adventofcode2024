@@ -2,18 +2,6 @@
 
 (require :uiop)
 
-(defun read-input (filename)
-  ;; Read filename as a list of strings; remove all newlines.
-  ; Note to self: :separator takes a sequence, so requires #\Newline to be in a
-  ; list instead of passed directly.
-  ; Another note to self: splitting a string on newline characters creates an
-  ; empty string. Use remove-if #'uiop:emptyp to drop the empty string from the
-  ; result.
-  (remove-if #'uiop:emptyp
-             (uiop:split-string
-              (uiop:read-file-string filename)
-              :separator '(#\Newline #\Return))))
-
 (defun check-for-match (start-row start-col direction array string)
   (if (zerop (length string))
       t
