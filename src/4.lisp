@@ -24,16 +24,6 @@
                      do (setf (aref array row col) char)))
       array)))
 
-(defparameter *directions*
-  (list :right (cons 0 1)
-        :left (cons 0 -1)
-        :up (cons -1 0)
-        :down (cons 1 0)
-        :up-right (cons -1 1)
-        :down-right (cons 1 1)
-        :up-left (cons -1 -1)
-        :down-left (cons 1 -1)))
-
 (defun within-bounds (row col gridsize)
   (and
    (>= row 0)

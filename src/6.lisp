@@ -3,17 +3,6 @@
 (require :uiop)
 (require :alexandria)
 
-(defparameter *directions*
-  ; Re-use from day 4
-  (list :right (cons 0 1)
-        :left (cons 0 -1)
-        :up (cons -1 0)
-        :down (cons 1 0)
-        :up-right (cons -1 1)
-        :down-right (cons 1 1)
-        :up-left (cons -1 -1)
-        :down-left (cons 1 -1)))
-
 (defun read-input (filename)
   ; Re-use from day 4
   ;; Read filename as a list of strings; remove all newlines.
