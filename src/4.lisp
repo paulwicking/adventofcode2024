@@ -14,11 +14,6 @@
               (uiop:read-file-string filename)
               :separator '(#\Newline #\Return))))
 
-(defun calculate-array-dimensions (input)
-  (let ((rows (length input))
-        (cols (length (first input))))
-    (values rows cols)))
-
 (defun create-2d-array-from (input)
   (multiple-value-bind (rows cols) (calculate-array-dimensions input)
     (let ((array (make-array (list rows cols))))

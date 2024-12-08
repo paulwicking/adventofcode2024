@@ -27,14 +27,6 @@
               (uiop:read-file-string filename)
               :separator '(#\Newline #\Return))))
 
-(defun calculate-array-dimensions (input)
-  "Returns the size dimensions of the array. Also works for an array of strings."
-  (if (arrayp input)
-      (values (array-dimension input 0)
-              (array-dimension input 1))
-      (values (length input)
-              (length (first input)))))
-
 (defun create-2d-array-from (input)
   ; Re-use from day 4
   (multiple-value-bind (rows cols) (calculate-array-dimensions input)
